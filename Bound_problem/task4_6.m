@@ -1,0 +1,97 @@
+%% Пример 1
+clc;
+fHandle = @(x, y) (x.^2 + y.^2).^2;
+xiHandle = @(x) x.^4;
+etaHandle = @(y) y.^4;
+M = 40;
+N = 45;
+[x, y] = meshgrid(0:1/M:1, 0:1/N:1);
+x = transpose(x);
+y = transpose(y);
+u = solveDirichlet(fHandle, xiHandle, etaHandle, 120, M, N);
+surf(x, y, real(u));
+xlabel('x');
+ylabel('y');
+title('Example 1', 'Interpreter', 'latex');
+
+%% Пример 2
+clc;
+M = 100;
+N = 250;
+fHandle = @(x, y) sin(x.*y);
+xiHandle = @(x) zeros(size(x));
+etaHandle = @(y) zeros(size(y));
+[x, y] = meshgrid(0:1/M:1, 0:1/N:1);
+x = transpose(x);
+y = transpose(y);
+u = solveDirichlet(fHandle, xiHandle, etaHandle, 10, M, N);
+surf(x, y, real(u));
+xlabel('x');
+ylabel('y');
+title('Example 2', 'Interpreter', 'latex');
+%% Пример 3
+clc;
+M = 100;
+N = 200;
+mu = 8;
+u1zero = 0.5;
+u2zero = 0.5;
+[x, y] = meshgrid(0:1/M:1, 0:1/N:1);
+%x = transpose(x);
+%y = transpose(y);
+%val_A = uAnalytical(0:1/M:1, 0:1/N:1, u1zero, u2zero, mu);
+val_A = uAnalytical(x, y, u1zero, -u2zero, mu);
+val_N = uNumerical(u1zero, -u2zero, mu, M, N);
+f1 = figure('Name', 'Comparison');
+subplot(1, 2, 1);
+surf(x, y, val_A);
+hold on;
+title('Analytical', 'Interpreter', 'latex');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+subplot(1, 2, 2);
+surf(x', y',real(val_N));
+title('Numerical', 'Interpreter', 'latex');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+f1.Position = [f1.Position(1) f1.Position(2) 560 560];
+exportgraphics(gcf, 'example1run1.eps','BackgroundColor','none','ContentType','vector')
+hold off;
+f2 = figure('Name', 'Discrepancy');
+surf(x, y,abs(val_A - real(val_N)'));
+title('Discrepancy', 'Interpreter', 'latex');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+
+%% пример 4
+clc;
+M = 50;
+N = 100;
+mu = 132;
+u1zero = 0.5;
+u2zero = 0.5;
+[x, y] = meshgrid(0:1/M:1, 0:1/N:1);
+%x = transpose(x);
+%y = transpose(y);
+%val_A = uAnalytical(0:1/M:1, 0:1/N:1, u1zero, u2zero, mu);
+val_A = uAnalytical(x, y, u1zero, -u2zero, mu);
+val_N = uNumerical(u1zero, -u2zero, mu, M, N);
+f1 = figure('Name', 'Comparison');
+ subplot(1, 2, 1);
+ surf(x, y, val_A);
+ hold on;
+ title('Analytical','Interpreter', 'latex');
+ subplot(1, 2, 2);
+ surf(x', y',real(val_N));
+ title('Numerical','Interpreter', 'latex');
+hold off;
+f2 = figure('Name', 'Discrepancy');
+surf(x, y,abs(val_A - real(val_N)'));
+title('Discrepancy', 'Interpreter', 'latex');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+
