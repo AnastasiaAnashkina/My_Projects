@@ -1,0 +1,11 @@
+function dydt = ode2(t, y, mu, eps, del, gam, alp, r, bet, u1, u2, L, B, A,Ce, lam, psi_0)
+    dydt = zeros(5, 1);
+    F = @(x) x.^lam .* L^(1 - lam); %на шаге итерации необходима проверка на > 0
+    Fk = @(x) lam.*(L ./ x).^(1 - lam);
+    c = @(u, x) u.*F(x);
+    utility = @(u, x, y) (Ce - A.*exp(-alp .* c(u, x)) + B.*exp(-bet.*y)).*exp(-r.*t);
+    dydt(1) = (1 - u1 - u2).* F(y(1)) - mu.* y(1);
+    dydt(2) = (eps - del* u2).* F(y(1)) - gam.* y(2);
+    dydt(3) = Fk(y(1)).*(psi_0.*A.*alp.*u1.*exp(-alp.*u1.*F(y(1))- r.*t) - y(3).*(1 - u1 - u2) - y(4).*(eps- del.*u2)) + mu.*y(3);
+    dydt(4) = - psi_0.*bet .* B.*exp(-bet.* y(2) - r.*t) + y(4).*gam;
+    dydt(5) = utility(u1, y(1), y(2));
